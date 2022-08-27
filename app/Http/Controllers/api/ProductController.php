@@ -32,12 +32,20 @@ class ProductController extends Controller
         $input = $request->all();
         $validator = Validator::make($input, [
         'name' => 'required',
+        'img' => 'required|mimes:png,jpg,jpeg,gif|max:2048',
         'detail' => 'required'
         ]);
         if($validator->fails()){
         return $this->sendError('Validation Error.', $validator->errors());       
         }
-        $product = Product::create($input);
+        //$product = Product::create($input);
+
+        $product = new Product();
+        $product->name = $input['name'];
+        $product->img= $input['img']->store('public/images');
+        $product->detail= $input['detail'];
+        $product->save();
+
         return response()->json([
         "success" => true,
         "message" => "Product created successfully.",
@@ -71,13 +79,16 @@ class ProductController extends Controller
         $input = $request->all();
         $validator = Validator::make($input, [
         'name' => 'required',
+        'img' => 'required|mimes:png,jpg,jpeg,gif|max:2048',
         'detail' => 'required'
         ]);
         if($validator->fails()){
         return $this->sendError('Validation Error.', $validator->errors());       
         }
+
         $product->name = $input['name'];
-        $product->detail = $input['detail'];
+        $product->img= $input['img']->store('public/images');
+        $product->detail= $input['detail'];
         $product->save();
         return response()->json([
         "success" => true,
